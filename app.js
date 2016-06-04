@@ -39,9 +39,7 @@ app.post('/', function(req, res) {
         //ticketData.ticketId TICKET NUMBER
         //ticketData.title TICKET TITLE
         //ticketData.description TICKET description
-        fs.readFile('./views/ticketSent.ejs', 'utf8', function(err, contents) {
-           res.send(contents);
-        });
+        res.render('ticketSent', { title: ticketData.title, ticketId: ticketData.ticketId });
     },
     function(errorMsg) {
         fs.readFile('./views/redirectErr.ejs', 'utf8', function(err, contents) {
