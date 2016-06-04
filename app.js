@@ -34,6 +34,18 @@ app.post('/ticketForm/', function(req, res) {
     console.log("i got here");
     console.log(req.body);
 
+    workflow.handleFormInput(req.body, function() {
+        //Send them a thank you page or something
+    },
+    function(errorMsg) {
+        //Redirect them with an error
+    });
+
+    /*try {
+        workflow.handleFormInput(req.body);
+    } catch (errorText) {
+        res.send(errorText);
+    } */
 });
 
 // catch 404 and forward to error handler
