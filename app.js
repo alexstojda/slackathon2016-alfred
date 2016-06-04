@@ -1,4 +1,5 @@
 var express = require('express');
+var fs = require('fs');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -32,12 +33,6 @@ app.listen(3000);
 app.post('/ticketForm/', function(req, res) {
     console.log("i got here");
     console.log(req.body);
-
-    try {
-        workflow.handleFormInput(req.body);
-    } catch (errorText) {
-        res.redirect('../redirectErr.ejs');
-    }
 
 });
 
