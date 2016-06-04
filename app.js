@@ -36,7 +36,7 @@ app.post('/ticketForm/', function(req, res) {
     try {
         workflow.handleFormInput(req.body);
     } catch (errorText) {
-        res.send(errorText);
+        res.redirect('../redirectErr.ejs');
     }
 
 });
