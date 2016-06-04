@@ -10,3 +10,8 @@ https://howdy.ai/botkit/
 
 IP: 170.20.64.151
 
+MYSQL ROOT PASS (FOR INFORMATIONAL PURPOSES ONLY, DO NOT USE): 3lSlack0s
+
+MySQL User: slacko
+MySQL Pass: slackathon
+
