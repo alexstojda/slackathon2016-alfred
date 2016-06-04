@@ -38,8 +38,8 @@
               errTxt = "The email address you entered is invalid!";
               break;
           }
-          document.getElementById("error").style.display = "block";
-          document.getElementById("error").innerHTML = errTxt;
+          document.getElementById("errorDiv").style.display = "block";
+          document.getElementById("errorText").innerHTML = errTxt;
         }
       }
     </script>
@@ -48,9 +48,15 @@
 
   <body>
     <div class="container">
-      <h1><%= title %></h1>
-      <p>Welcome to <%= title %></p>
-      <div id="error" style="display: none; color: red;">text</div>
+      <div class="page-header">
+        <h1><%= title %></h1>
+        <p>Welcome to <%= title %></p>
+      </div>
+
+      <div id="errorDiv" class="alert alert-danger" style="display: none">
+        <strong id="errorText">Danger!</strong>
+      </div>
+
       <form action="/" enctype="application/x-www-form-urlencoded" method="post">
         <div class="form-group">
           <label for="exampleInputName1">Name</label>
