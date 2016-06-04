@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
+    <title>redirect</title>
     <meta charset="UTF-8">
     <script>
-      alert("error");
-      window.location = "http://google.com";
+      document.addEventListener('DOMContentLoaded', function() {
+        var error = document.getElementById("error").innerHTML;
+        window.location = "./?err=" + error;
+      }, false);
     </script>
   </head>
-</html>
+  <body>
+    <p id="error">

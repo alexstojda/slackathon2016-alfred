@@ -30,7 +30,7 @@ app.use('/users', users);
 app.listen(3000);
 
 // Upload route.
-app.post('/ticketForm/', function(req, res) {
+app.post('/', function(req, res) {
     console.log("i got here");
     console.log(req.body);
 
@@ -38,14 +38,11 @@ app.post('/ticketForm/', function(req, res) {
         //Send them a thank you page or something
     },
     function(errorMsg) {
-        //Redirect them with an error
+        fs.readFile('./views/redirectErr.ejs', 'utf8', function(err, contents) {
+            res.send(contents + errorMsg + "</p></body></html>");
+        });
     });
-
-    /*try {
-        workflow.handleFormInput(req.body);
-    } catch (errorText) {
-        res.send(errorText);
-    } */
+    
 });
 
 // catch 404 and forward to error handler

@@ -4,11 +4,51 @@
     <title><%= title %></title>
     <meta charset="UTF-8">
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script type="text/javascript">
+      function getQueryVariable(variable)
+      {
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i=0;i<vars.length;i++) {
+          var pair = vars[i].split("=");
+          if(pair[0] == variable){return pair[1];}
+        }
+        return(false);
+      }
+      window.onload = function()
+      {
+        errNum = getQueryVariable("err");
+        if (errNum != false) {
+          var errTxt = "Invalid Error";
+          switch(errNum) {
+            case "1":
+              errTxt = "Please provide a name!";
+              break;
+            case "2":
+              errTxt = "Please provide a title!";
+              break;
+            case "3":
+              errTxt = "Please provide a description!";
+              break;
+            case "4":
+              errTxt = "The email address you entered is invalid!";
+              break;
+          }
+          document.getElementById("error").style.display = "block";
+          document.getElementById("error").innerHTML = errTxt;
+        }
+      }
+
+
+
+
+    </script>
   </head>
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
-    <form action="/ticketForm/" enctype="application/x-www-form-urlencoded" method="post">
+    <div id="error" style="display: none; color: red;">text</div>
+    <form action="/" enctype="application/x-www-form-urlencoded" method="post">
       <p>Name: <input type="text" name="name" id="n" maxlength="50" size="30"></p>
       <p>Email: <input type="text" name="email" id="e" maxlength="50" size="30"></p>
       <p>Title: <input type="text" name="title" id="t" maxlength="120" size="60"></p>
