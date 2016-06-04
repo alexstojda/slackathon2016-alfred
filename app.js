@@ -35,11 +35,7 @@ app.post('/', function(req, res) {
     console.log(req.body);
 
     workflow.handleFormInput(req.body, function(ticketData) {
-        //TODO: Send them a thank you page or something
-        //ticketData.ticketId TICKET NUMBER
-        //ticketData.title TICKET TITLE
-        //ticketData.description TICKET description
-        res.render('ticketSent', { title: ticketData.title, ticketId: ticketData.ticketId });
+        res.render('ticketSent', { title: ticketData.title, ticketId: ticketData.ticketId, ticketDesc: ticketData.description });
     },
     function(errorMsg) {
         fs.readFile('./views/redirectErr.ejs', 'utf8', function(err, contents) {
