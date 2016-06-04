@@ -5,15 +5,16 @@
 //TEMPLATE CURRENTLY
 var request = require('request');
 var requestData = {
-    "text": "penis"
+    "channel": "@gabe",
+    "text": "you have a small penis"
 };
 
 request({
-    url: "https://elslackos.slack.com/services/hooks/slackbot?token=xoxb-48203657264-VQPgm03W8yAM3MpXhsjw44em&channel=general",
-method: "POST",
+    url: "https://hooks.slack.com/services/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",
+    method: "POST",
     json: true,
     headers: {
-    "content-type": "application/json",
-},
-body: JSON.stringify(requestData)
+        "content-type": "application/json"
+    },
+    body: requestData
 });
