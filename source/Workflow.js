@@ -13,7 +13,8 @@ var checkEmpty = function(text) {
     return text == null || text.trim() == "";
 };
 
-var handleFormInput = function(formData) {
+var handleFormInput = function(formData, cbSuccess, cbError) {
+
     //First thing we want to do is get into the database
     //var insertTicketRecord = function(email, name, customFields, ticketTitle, ticketDescription) {
     var email = formData.email;
@@ -35,7 +36,24 @@ var handleFormInput = function(formData) {
         throw "Invalid email input";
     }
 
-    ticketDB.insertTicketRecord(email, name, customFields, title, description);
+    ticketDB.insertTicketRecord(email, name, customFields, title, description, function(ticketId) {
+        createChannel(ticketId, title, cbSuccess, cbError);
+    }, function(error) {
+        cbError(error);
+    });
+
+};
+
+var createChannel = function(ticketId, ticketTitle, cbSuccess, cbError) {
+
+    //Some pseudo-code to follow
+    /* if (success)
+           cbSuccess()
+       else
+           cbError(Message to display to user on the other end (User friendly));
+
+        return;
+    */
 
 };
 
