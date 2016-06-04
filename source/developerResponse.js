@@ -14,6 +14,50 @@ var bot = new slackbot(token.BOT);
 bot.use(function (message, cb) {
     if ((message.type == 'message') && (message.text.includes(BOT_HASH))) {
 
+        if (message.text.includes('CLOSE TICKET')) {
+            var channel = message.channel;
+            
+            request('https://slack.com/api/channels.archive?token=xoxp-34476473665-34483469029-48223068260-3070583ad2&channel=' + channel, function (error, response, body) {
+                if (error || response.statusCode !== 200) {
+                    //API Error
+                }
+
+                else {
+                    //var senderName = body.user.real_name;
+                    console.log(body);
+                    if (body.ok) {
+                        
+                        //Set Status of ticket to 1
+                        
+                    }
+                    
+                }
+            });
+        }
+
+        else if (message.text.includes('MAKE URGENT')){
+            var channel = message.channel;
+
+            request('https://slack.com/api/channels.info?token=xoxp-34476473665-34483469029-48223068260-3070583ad2&channel=' + channel,
+                function (error, response, body) {
+                    if (error || response.statusCode !== 200) {
+                        //API Error
+                    }
+
+                    else {
+
+                        var body_object = JSON.parse(body);
+                        var ticketTitle = 'URGENT' + body_object.channel.topic.value;
+                        
+                            request('')
+                        
+                        if (body_object.channel.topic.value.ok) {
+                        }
+
+                    }
+                });
+        }
+
         request('https://slack.com/api/users.info?token='+token.WEB_HOOK+'&user='+message.user, function(error, response, body) {
             if (error) {} else if (response.statusCode !== 200) {}
             else {
