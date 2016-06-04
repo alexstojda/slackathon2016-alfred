@@ -4,7 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var workflow = require('./source/Workflow');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -29,12 +29,17 @@ app.use('/users', users);
 app.listen(3000);
 
 // Upload route.
-app.post('/', function(req, res) {
-  console.log("i got here");
-  console.log(req.body);
+app.post('/ticketForm/', function(req, res) {
+    console.log("i got here");
+    console.log(req.body);
+
+    try {
+        workflow.handleFormInput(req.body);
+    } catch (errorText) {
+        res.send(errorText);
+    }
+
 });
-
-
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
