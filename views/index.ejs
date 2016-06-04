@@ -2,10 +2,20 @@
 <html>
   <head>
     <title><%= title %></title>
+    <meta charset="UTF-8">
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
+    <form action="/ticketForm/" enctype="application/x-www-form-urlencoded" method="post">
+      <p>Name: <input type="text" name="name" id="n" maxlength="50" size="30"></p>
+      <p>Email: <input type="text" name="email" id="e" maxlength="50" size="30"></p>
+      <p>Title: <input type="text" name="title" id="t" maxlength="120" size="60"></p>
+      <p>extra fields here</p>
+      <p>Description of problem:</p>
+      <textarea name="description" id="d" rows="10" cols="100"></textarea>
+      <input type="submit" id="s" value="Submit">
+    </form>
   </body>
 </html>
