@@ -22,6 +22,7 @@ CREATE TABLE `ticket` (
   `TKT_ID` int(11) NOT NULL AUTO_INCREMENT,
   `TKT_EMAIL` varchar(255) NOT NULL,
   `TKT_NAME` varchar(70) NOT NULL,
+  `TKT_TITLE` varchar(120) NOT NULL,
   `TKT_CUSTOM_FIELDS` longtext NOT NULL,
   `TKT_DESCRIPTION` longtext NOT NULL,
   `TKT_TITLE` varchar(50) NOT NULL,
