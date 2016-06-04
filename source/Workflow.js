@@ -23,22 +23,32 @@ var handleFormInput = function(formData, cbSuccess, cbError) {
     var description = formData.description;
     var customFields = {};
 
-    if (checkEmpty(name))
-        throw "Please provide a name!";
+    if (checkEmpty(name)) {
+        cbError("Please provide a name!");
+        return;
+    }
 
-    if (checkEmpty(title))
-        throw "Please provide a title!";
+    if (checkEmpty(title)) {
+        cbError("Please provide a title!");
+        return;
+    }
 
-    if (checkEmpty(description))
-        throw "Please provide a description!";
+    if (checkEmpty(description)) {
+        cbError("Please provide a description!");
+        return;
+    }
 
     if (!checkEmailFormat(email)) {
-        throw "Invalid email input";
+        cbError("The email address you entered is invalid!");
+        return;
     }
 
     ticketDB.insertTicketRecord(email, name, customFields, title, description, function(ticketId) {
+        //Next after inserted the ticket data to the DB
         createChannel(ticketId, title, cbSuccess, cbError);
+
     }, function(error) {
+        //In the event of an error
         cbError(error);
     });
 
