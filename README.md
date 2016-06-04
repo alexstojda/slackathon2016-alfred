@@ -14,7 +14,7 @@ MYSQL ROOT PASS (FOR INFORMATIONAL PURPOSES ONLY, DO NOT USE): 3lSlack0s
 
 MySQL User: slacko
 MySQL Pass: slackathon
-
+```sql
 CREATE TABLE `ticket` (
   `TKT_ID` int(11) NOT NULL AUTO_INCREMENT,
   `TKT_EMAIL` varchar(255) NOT NULL,
@@ -24,3 +24,4 @@ CREATE TABLE `ticket` (
   PRIMARY KEY (`TKT_ID`),
   UNIQUE KEY `TKT_ID_UNIQUE` (`TKT_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+```
