@@ -4,13 +4,12 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var workflow = require('./source/Workflow');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
-
-app.listen(3000);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -26,6 +25,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/users', users);
+
+app.listen(3000);
+
+// Upload route.
+app.post('/ticketForm/', function(req, res) {
+    console.log("i got here");
+    console.log(req.body);
+
+    try {
+        workflow.handleFormInput(req.body);
+    } catch (errorText) {
+        res.send(errorText);
+    }
+
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -57,6 +71,5 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
-
 
 module.exports = app;
