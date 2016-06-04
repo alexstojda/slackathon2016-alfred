@@ -3,16 +3,83 @@
  */
 
 var slackbot = require('node-slackbot');
- var bot = new slackbot('xoxb-48203657264-VQPgm03W8yAM3MpXhsjw44em');
+var token = require('../token/token.js');
+var request = require('request');
+var ticket = require('./TicketDatabase');
+var nodemailer = require('nodemailer');
+var transporter = nodemailer.createTransport('direct:?name=slackos.teambana.com');
+var BOT_HASH = '<@U1E5ZKB7S>';
+var bot = new slackbot(token.BOT);
 
- bot.use(function(message, cb) {
- if ((message.type == 'message') && (message.text.includes('<@U1E5ZKB7S>:'))) {
- console.log(message.user + ' said: ' + message.text);
+bot.use(function (message, cb) {
+    if ((message.type == 'message') && (message.text.includes(BOT_HASH))) {
 
- }
- cb();
- });
+        request('https://slack.com/api/users.info?token='+token.WEB_HOOK+'&user='+message.user, function(error, response, body) {
+            if (error) {} else if (response.statusCode !== 200) {}
+            else {
+                var senderName = JSON.parse(body).user.real_name;
+                request('https://slack.com/api/channels.info?token='+token.WEB_HOOK+'&channel='+message.channel, function(error, response, body) {
+                    if (error) {} else if (response.statusCode !== 200) {}
+                    else {
+                        var channel = JSON.parse(body).channel.name;
+                        sendEmail(channel, senderName, message.text);
+                    }
+                });
+            }
+        });
+    }
+    cb();
+});
 
- bot.connect();
+bot.connect();
+
+var sendEmail = function (ticketID, respondingUserName, message) {
+    getTicket(ticketID, function(ticket) {
+
+        message = message.replace(BOT_HASH, ticket.name);
+
+        //TODO: Save message in the database.
+
+        console.log(message);
+
+        var text =  "You have recevied a new response from "+respondingUserName+'\n'+
+            '"'+message+"\"\n"+
+            "To reply to your ticket, please copy and paste this link into your browser \n\n"+
+            "<LINK>";//TODO: Add link to response form
+
+        var html = "<h2>You have recevied a new response from "+respondingUserName+" for your ticket \""+ticket.title+"\"</h2>"+
+            "<p>"+message+"</p>"+
+            "<p><a href='#'>Click here to respond to your ticket</a></p>";
+
+
+        var mailOptions = {
+            from: '"Alfred@El Slackos" <alfred@elslackos.slack.com>', // sender address
+            to: ticket.email, // list of receivers
+            subject: 'New reply to your ticket: '+ticket.title, // Subject line
+            text: text, // plaintext body
+            html: html // html body
+        };
+
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                return console.log(error);
+            }
+            console.log('Message sent: ' + info.response);
+        });
+    },
+    function (err) {
+        //error handler
+    });
+
+
+};
+
+var getTicket = function(ticketID, cbNext, cbError){
+    ticket.fetchTicketRecord(ticketID, function(thisTicket) {
+        cbNext(thisTicket);
+    }, function(err){
+        cbError(err);
+    });
+};
 
 
