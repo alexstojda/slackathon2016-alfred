@@ -65,25 +65,38 @@ var createChannel = function(ticketId, ticketTitle, ticketDescription, name, ema
         }
         else {
 
-            request('https://slack.com/api/channels.setTopic?token=xoxp-34476473665-34483469029-48223068260-3070583ad2&channel=' + ticketId.toString() + '&topic=' + ticketTitle,
-                function (error, response, body) {
-                    if (error) {
-                        console.error(error.message);
-                    } else
-                        console.log('Finished creating channel for ticket #' + ticketId + ' with topic: ' + ticketTitle);
+            var body_object = JSON.parse(body);
+
+            if (body_object.ok) {
+
+                var channelId = body_object.channel.id;
+                ticketDB.addChannelIdToTicket(ticketId, channelId);
+
+                request('https://slack.com/api/channels.setTopic?token=xoxp-34476473665-34483469029-48223068260-3070583ad2&channel=' + channelId + '&topic=' + ticketTitle,
+                    function (error, response2, body2) {
+                        var body2_object = JSON.parse(body2);
+                        if (error) {
+                            console.error(error.message);
+                        } else if (!body2_object.ok)
+                            console.error(body2.error);
+                        else
+                            console.log('Finished creating channel for ticket #' + ticketId + ' with topic: ' + ticketTitle);
+                    });
+
+                var message = name + ' (' + email + ') asks: \n'
+                message += ticketDescription;
+                userResponse.sendMessageAsBot(message, ticketId.toString(), function () {
+                    console.log('successfully initialized the channel with the ticket description');
+                }, function (error) {
+                    console.error('Error in initializing channel for ticket #' + ticketId + '\n\n' + error.message);
                 });
 
-            var message = name + ' (' + email + ') asks: \n'
-            message += ticketDescription;
-            userResponse.sendMessageAsBot(message, ticketId.toString(), function() {
-                console.log('successfully initialized the channel with the ticket description');
-            }, function(error) {
-                console.error('Error in initializing channel for ticket #' + ticketId + '\n\n' + error.message);
-            });
+                //var senderName = body.user.real_name;
+                cbSuccess(response);
 
-            //var senderName = body.user.real_name;
-            cbSuccess(response);
-
+            } else {
+                cbError("Unable to create channel for this ticket, please try again...")
+            }
         }
     });
 
