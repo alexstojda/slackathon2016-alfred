@@ -1,4 +1,5 @@
 var express = require('express');
+var fs = require('fs');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -29,23 +30,23 @@ app.use('/users', users);
 app.listen(3000);
 
 // Upload route.
-app.post('/ticketForm/', function(req, res) {
+app.post('/', function(req, res) {
     console.log("i got here");
     console.log(req.body);
 
-    workflow.handleFormInput(req.body, function() {
-        //Send them a thank you page or something
+    workflow.handleFormInput(req.body, function(ticketData) {
+        //TODO: Send them a thank you page or something
+        //ticketData.ticketId TICKET NUMBER
+        //ticketData.title TICKET TITLE
+        //ticketData.description TICKET description
+        res.render('ticketSent', { title: ticketData.title, ticketId: ticketData.ticketId });
     },
     function(errorMsg) {
-        //Redirect them with an error
+        fs.readFile('./views/redirectErr.ejs', 'utf8', function(err, contents) {
+            res.send(contents + errorMsg + "</p></body></html>");
+        });
     });
-
-    /*try {
-        workflow.handleFormInput(req.body);
-    } catch (errorText) {
-        res.send(errorText);
-    } */
-
+    
 });
 
 // catch 404 and forward to error handler

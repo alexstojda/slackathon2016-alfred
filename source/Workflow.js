@@ -28,22 +28,22 @@ var handleFormInput = function(formData, cbSuccess, cbError) {
     var customFields = {};
 
     if (checkEmpty(name)) {
-        cbError("Please provide a name!");
+        cbError("1");
         return;
     }
 
     if (checkEmpty(title)) {
-        cbError("Please provide a title!");
+        cbError("2");
         return;
     }
 
     if (checkEmpty(description)) {
-        cbError("Please provide a description!");
+        cbError("3");
         return;
     }
 
     if (!checkEmailFormat(email)) {
-        cbError("The email address you entered is invalid!");
+        cbError("4");
         return;
     }
 
@@ -102,7 +102,11 @@ var createChannel = function(ticketId, ticketTitle, ticketDescription, name, ema
                         console.log('Bot could not be added to new channel');
                     }
                 });
-                cbSuccess(response);
+                cbSuccess({
+                    ticketId: ticketId,
+                    title: ticketTitle,
+                    description: ticketDescription
+                });
 
             } else {
                 cbError("Unable to create channel for this ticket, please try again...")
