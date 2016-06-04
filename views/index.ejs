@@ -7,16 +7,11 @@
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
-    <form action="sendWhere?" method="post">
-      <p>Name: <input type="text" name="fname"></p>
-      <p>Email: <input type="text" name="lname"></p>
-      <p>Type of Problem:
-      <select name="problemType">
-        <option value="json1">json1</option>
-        <option value="json2">json2</option>
-        <option value="json3">json3</option>
-        <!-- need to pull from json and loop making options here -->
-      </select></p>
+    <form action="" method="post">
+      <p>Name: <input type="text" name="name" maxlength="50" size="30"></p>
+      <p>Email: <input type="text" name="email" maxlength="50" size="30"></p>
+      <p>Title: <input type="text" name="title" maxlength="120" size="60"></p>
+      <p>extra fields here</p>
       <p>Description of problem:</p>
       <textarea name="description" rows="10" cols="100"></textarea>
       <input type="submit" value="Submit">
