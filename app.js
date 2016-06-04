@@ -34,8 +34,14 @@ app.post('/', function(req, res) {
     console.log("i got here");
     console.log(req.body);
 
-    workflow.handleFormInput(req.body, function() {
-        //Send them a thank you page or something
+    workflow.handleFormInput(req.body, function(ticketData) {
+        //TODO: Send them a thank you page or something
+        //ticketData.ticketId TICKET NUMBER
+        //ticketData.title TICKET TITLE
+        //ticketData.description TICKET description
+        fs.readFile('./views/ticketSent.ejs', 'utf8', function(err, contents) {
+           res.send(contents);
+        });
     },
     function(errorMsg) {
         fs.readFile('./views/redirectErr.ejs', 'utf8', function(err, contents) {

@@ -92,7 +92,12 @@ var createChannel = function(ticketId, ticketTitle, ticketDescription, name, ema
                 });
 
                 //var senderName = body.user.real_name;
-                cbSuccess(response);
+                cbSuccess({
+                    ticketId: ticketId,
+                    title: ticketTitle,
+                    description: ticketDescription
+                });
+                //Go back the the original callback with ticketId as a parameter
 
             } else {
                 cbError("Unable to create channel for this ticket, please try again...")
