@@ -8,17 +8,17 @@
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
     <form action="sendWhere?" method="post">
-      Name: <input type="text" name="fname"><br>
-      Email: <input type="text" name="lname"><br>
-      Type of Problem:
+      <p>Name: <input type="text" name="fname"></p>
+      <p>Email: <input type="text" name="lname"></p>
+      <p>Type of Problem:
       <select name="problemType">
         <option value="json1">json1</option>
         <option value="json2">json2</option>
         <option value="json3">json3</option>
         <!-- need to pull from json and loop making options here -->
-      </select>
-      Description of problem:<br/>
-      <textarea name="description" rows="10" cols="30"></textarea>
+      </select></p>
+      <p>Description of problem:</p>
+      <textarea name="description" rows="10" cols="100"></textarea>
       <input type="submit" value="Submit">
     </form>
   </body>
