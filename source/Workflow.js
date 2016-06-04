@@ -52,7 +52,7 @@ var createChannel = function(ticketId, ticketTitle, cbSuccess, cbError) {
             //API Error
             cbError("Unable to create channel for this ticket, please try again...")
         }
-        
+
         else {
             //var senderName = body.user.real_name;
             cbSuccess(response);
