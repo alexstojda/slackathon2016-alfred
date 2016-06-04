@@ -7,5 +7,14 @@
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
+    <form action="" method="post">
+      <p>Name: <input type="text" name="name" maxlength="50" size="30"></p>
+      <p>Email: <input type="text" name="email" maxlength="50" size="30"></p>
+      <p>Title: <input type="text" name="title" maxlength="120" size="60"></p>
+      <p>extra fields here</p>
+      <p>Description of problem:</p>
+      <textarea name="description" rows="10" cols="100"></textarea>
+      <input type="submit" value="Submit">
+    </form>
   </body>
 </html>
