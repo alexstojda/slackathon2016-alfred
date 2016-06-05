@@ -1,7 +1,7 @@
 /**
  * Created by robert_Account on 2016-06-04.
  */
-
+var fs = require('fs');
 var slackbot = require('node-slackbot');
 var token = require('../token/token.js');
 var request = require('request');
@@ -12,8 +12,8 @@ var BOT_HASH = '<@U1E5ZKB7S>';
 var bot = new slackbot(token.BOT);
 var userResponse = require('./userResponse.js');
 
-var setStatus = function(channelId, status) {
-
+var setStatus = function (channelId, status) {
+    
     request('https://slack.com/api/channels.archive?token=' + token.WEB_HOOK + '&channel=' + channelId, function(error, response, body) {
         if (error || response.statusCode !== 200) {
             //API Error
@@ -46,20 +46,19 @@ bot.use(function (message, cb) {
                     console.log(body);
 
 
-
                     if (body.ok) {
-                        
+
                         //Set Status of ticket to 1
 
                         setStatus(channel, 1);
 
                     }
-                    
+
                 }
             });
         }
 
-        else if (message.text.includes('MAKE URGENT')){
+        else if (message.text.includes('MAKE URGENT')) {
             var channel = message.channel;
 
             request('https://slack.com/api/channels.info?token=' + token.WEB_HOOK + '&channel=' + channel,
@@ -73,7 +72,7 @@ bot.use(function (message, cb) {
                         if (body_object.ok) {
                             var ticketTitle = 'URGENT: ' + body_object.channel.topic.value;
                             var ticketId = body_object.channel.name;
-                            ticket.getStatus(ticketId, function(statusCode) {
+                            ticket.getStatus(ticketId, function (statusCode) {
                                 //Check the see if it's already set to urgent
                                 if (statusCode == 2) return;
 
@@ -90,7 +89,6 @@ bot.use(function (message, cb) {
                                             var message = 'ticket #' + ticketId + ' has been marked as URGENT by ' + message.user;
                                             var channel = ticketId;
                                             userResponse.sendMessageAsBot(message,channel,false);
-
                                         }
 
                                     });
@@ -102,12 +100,16 @@ bot.use(function (message, cb) {
         }
 
         else
-            request('https://slack.com/api/users.info?token='+token.WEB_HOOK+'&user='+message.user, function(error, response, body) {
-                if (error) {} else if (response.statusCode !== 200) {}
+            request('https://slack.com/api/users.info?token=' + token.WEB_HOOK + '&user=' + message.user, function (error, response, body) {
+                if (error) {
+                } else if (response.statusCode !== 200) {
+                }
                 else {
                     var senderName = JSON.parse(body).user.real_name;
-                    request('https://slack.com/api/channels.info?token='+token.WEB_HOOK+'&channel='+message.channel, function(error, response, body) {
-                        if (error) {} else if (response.statusCode !== 200) {}
+                    request('https://slack.com/api/channels.info?token=' + token.WEB_HOOK + '&channel=' + message.channel, function (error, response, body) {
+                        if (error) {
+                        } else if (response.statusCode !== 200) {
+                        }
                         else {
                             var channel = JSON.parse(body).channel.name;
                             sendEmail(channel, senderName, message.text);
@@ -124,50 +126,56 @@ bot.use(function (message, cb) {
 bot.connect();
 
 var sendEmail = function (ticketID, respondingUserName, message) {
-    getTicket(ticketID, function(ticket) {
+    fs.readFile('../views/email.html', 'utf8', function (err, data) {
+        if (err) {
+            console.log(err);
+        } else {
+            var html = data;
+            getTicket(ticketID, function (ticket) {
+                ticket.setTicketToken(ticketID, function(token) {
+                    message = message.replace(BOT_HASH, ticket.name);
 
-        message = message.replace(BOT_HASH, ticket.name);
+                    //TODO: Save message in the database.
 
-        //TODO: Save message in the database.
+                    console.log(message);
 
-        console.log(message);
+                    var text = "You have recevied a new response from " + respondingUserName + '\n' +
+                        '"' + message + "\"\n" +
+                        "To reply to your ticket, please copy and paste this link into your browser \n\n" +
+                        "<LINK>";//TODO: Add link to response form
 
-        var text =  "You have received a new response from "+respondingUserName+'\n'+
-            '"'+message+"\"\n"+
-            "To reply to your ticket, please copy and paste this link into your browser \n\n"+
-            "<LINK>";//TODO: Add link to response form
+                    html = html.replace(/{{NAME}}/g, ticket.name);
+                    html = html.replace(/{{LINK}}/g, 'http://localhost:3000/response?id='+ticketID+'&token='+token);
+                    html = html.replace(/{{MESSAGE}}/g, message);
+                    html = html.replace(/{{SENDING_USER}}/g, respondingUserName);
 
-        var html = "<h2>You have received a new response from "+respondingUserName+" for your ticket \""+ticket.title+"\"</h2>"+
-            "<p>"+message+"</p>"+
-            "<p><a href='#'>Click here to respond to your ticket</a></p>";
+                    var mailOptions = {
+                        from: '"Alfred@El Slackos" <alfred@elslackos.slack.com>', // sender address
+                        to: ticket.email, // list of receivers
+                        subject: 'New reply to your ticket: ' + ticket.title, // Subject line
+                        text: text, // plaintext body
+                        html: html // html body
+                    };
 
-
-        var mailOptions = {
-            from: '"Alfred@El Slackos" <alfred@elslackos.slack.com>', // sender address
-            to: ticket.email, // list of receivers
-            subject: 'New reply to your ticket: '+ticket.title, // Subject line
-            text: text, // plaintext body
-            html: html // html body
-        };
-
-        transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-                return console.log(error);
-            }
-            console.log('Message sent: ' + info.response);
-        });
-    },
-    function (err) {
-        //error handler
+                    transporter.sendMail(mailOptions, function (error, info) {
+                        if (error) {
+                            return console.log(error);
+                        }
+                        console.log('Message sent: ' + info.response);
+                    });
+                },
+                function (err) {
+                    //error handler
+                });
+            });
+        }
     });
-
-
 };
 
-var getTicket = function(ticketID, cbNext, cbError){
-    ticket.fetchTicketRecord(ticketID, function(thisTicket) {
+var getTicket = function (ticketID, cbNext, cbError) {
+    ticket.fetchTicketRecord(ticketID, function (thisTicket) {
         cbNext(thisTicket);
-    }, function(err){
+    }, function (err) {
         cbError(err);
     });
 };
