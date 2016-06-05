@@ -137,7 +137,7 @@ var sendEmail = function (ticketID, respondingUserName, message) {
             "To reply to your ticket, please copy and paste this link into your browser \n\n"+
             "<LINK>";//TODO: Add link to response form
 
-        var html = "<h2>You have recevied a new response from "+respondingUserName+" for your ticket \""+ticket.title+"\"</h2>"+
+        var html = "<h2>You have received a new response from "+respondingUserName+" for your ticket \""+ticket.title+"\"</h2>"+
             "<p>"+message+"</p>"+
             "<p><a href='#'>Click here to respond to your ticket</a></p>";
 
