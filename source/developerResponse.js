@@ -47,7 +47,7 @@ bot.use(function (message, cb) {
                     else {
 
                         var body_object = JSON.parse(body);
-                        var ticketTitle = 'URGENT' + body_object.channel.topic.value;
+                        var ticketTitle = 'URGENT: ' + body_object.channel.topic.value;
 
                         request('https://slack.com/api/channels.setTopic?token=xoxp-34476473665-34483469029-48223068260-3070583ad2&channel=' + channel + '&topic=' + ticketTitle,
                             function (error, response2, body2) {
