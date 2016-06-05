@@ -96,19 +96,21 @@ bot.use(function (message, cb) {
                 });
         }
 
-        request('https://slack.com/api/users.info?token='+token.WEB_HOOK+'&user='+message.user, function(error, response, body) {
-            if (error) {} else if (response.statusCode !== 200) {}
-            else {
-                var senderName = JSON.parse(body).user.real_name;
-                request('https://slack.com/api/channels.info?token='+token.WEB_HOOK+'&channel='+message.channel, function(error, response, body) {
-                    if (error) {} else if (response.statusCode !== 200) {}
-                    else {
-                        var channel = JSON.parse(body).channel.name;
-                        sendEmail(channel, senderName, message.text);
-                    }
-                });
-            }
-        });
+        else
+            request('https://slack.com/api/users.info?token='+token.WEB_HOOK+'&user='+message.user, function(error, response, body) {
+                if (error) {} else if (response.statusCode !== 200) {}
+                else {
+                    var senderName = JSON.parse(body).user.real_name;
+                    request('https://slack.com/api/channels.info?token='+token.WEB_HOOK+'&channel='+message.channel, function(error, response, body) {
+                        if (error) {} else if (response.statusCode !== 200) {}
+                        else {
+                            var channel = JSON.parse(body).channel.name;
+                            sendEmail(channel, senderName, message.text);
+                            ticket.insertTicketMessage(message.text, senderName, channel);
+                        }
+                    });
+                }
+            });
     }
     cb();
 });

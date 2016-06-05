@@ -3,9 +3,11 @@
  */
 
 var request = require('request');
+var ticketDB = require('./TicketDatabase');
 
-module.exports.sendMessageAsBot = function(message, channel, next, error) {
+module.exports.sendMessageAsBot = function(message, channel, addToHistory, next, error) {
 
+    var ticketId = channel;
     if (channel.length > 0 && channel[0] != '#')
         channel = '#' + channel;
 
@@ -13,6 +15,14 @@ module.exports.sendMessageAsBot = function(message, channel, next, error) {
         channel: channel,
         text: message
     };
+
+    if (addToHistory) {
+        ticketDB.fetchTicketRecord(ticketId, function(ticketData) {
+            ticketDB.insertTicketMessage(message, ticketData.name, ticketId);
+        }, function (err) {
+            console.error("error in logging historical message to database" + err);
+        });
+    }
 
     request({
         url: "https://hooks.slack.com/services/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",

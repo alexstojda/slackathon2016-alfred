@@ -6,6 +6,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var workflow = require('./source/Workflow');
+var userResponse = requre('./source/userResponse');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -48,6 +49,13 @@ app.post('/', function(req, res) {
 
 app.post('/response', function(req, res) {
     console.log(req.body);
+    var message = req.body.description;
+    var ticketId = req.body.ticketId;
+    userResponse.sendMessageAsBot(message, ticketId, true, function() {
+        res.render('ticketSent');
+    }, function (err) {
+
+    });
     console.log("response post");
 });
 
