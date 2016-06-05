@@ -35,13 +35,11 @@
           document.getElementById("ticketIdInput").value = ticketID;
         }
 
-        console.log("hello");
-
         var historyStr = "<%= historyBlock %>";
-        console.log("we got here: " + historyStr);
         if (isEmpty(historyStr)) {
           document.getElementById("historyDiv").innerHTML = "<p>No previous history</p>";
         } else {
+          historyStr = historyStr.replace("*br*", "<br>");
           var paras = historyStr.split("*np*");
           for (var i=0;i<paras.length;i++) {
             document.getElementById("historyDiv").innerHTML = document.getElementById("historyDiv").innerHTML + "<p>" + paras[i] + "</p>";
@@ -66,7 +64,7 @@
 
       <form action="/response" enctype="application/x-www-form-urlencoded" method="post">
         <div class="form-group">
-          <label for="exampleInputName1">Description of problem</label>
+          <label for="exampleInputName1">Response</label>
           <textarea class="form-control" name="description" rows="10" ></textarea>
         </div>
         <input id="ticketIdInput" type="hidden" name="ticketId" value="0">
