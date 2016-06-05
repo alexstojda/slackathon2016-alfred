@@ -7,6 +7,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var workflow = require('./source/Workflow');
 var userResponse = require('./source/userResponse');
+var developerResponse = require('./source/developerResponse');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
