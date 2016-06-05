@@ -19,6 +19,11 @@
         }
         return(false);
       }
+
+      function isEmpty(str) {
+        return (!str || 0 === str.length);
+      }
+
       window.onload = function()
       {
         ticketID = getQueryVariable("id");
@@ -28,6 +33,19 @@
           document.getElementById("errorText").innerHTML = errTxt;
         } else {
           document.getElementById("ticketIdInput").value = ticketID;
+        }
+
+        console.log("hello");
+
+        var historyStr = "<%= historyBlock %>";
+        console.log("we got here: " + historyStr);
+        if (isEmpty(historyStr)) {
+          document.getElementById("historyDiv").innerHTML = "<p>No previous history</p>";
+        } else {
+          var paras = historyStr.split("*np*");
+          for (var i=0;i<paras.length;i++) {
+            document.getElementById("historyDiv").innerHTML = document.getElementById("historyDiv").innerHTML + "<p>" + paras[i] + "</p>";
+          }
         }
       }
     </script>
@@ -55,6 +73,8 @@
         <input id="titleInput" type="hidden" name="title" value="<%= title %>">
         <button type="submit" class="btn btn-default">Submit</button>
       </form>
+      <br/>
+      <div id="historyDiv" class="lead"></div>
     </div>
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
