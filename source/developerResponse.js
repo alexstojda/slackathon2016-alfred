@@ -14,7 +14,7 @@ var userResponse = require('./userResponse.js');
 
 var setStatus = function(channelId, status) {
 
-    request('https://slack.com/api/channels.archive?token=xoxp-34476473665-34483469029-48223068260-3070583ad2&channel=' + channelId, function(error, response, body) {
+    request('https://slack.com/api/channels.archive?token=' + token.WEB_HOOK + '&channel=' + channelId, function(error, response, body) {
         if (error || response.statusCode !== 200) {
             //API Error
         }
@@ -36,7 +36,7 @@ bot.use(function (message, cb) {
         if (message.text.includes('CLOSE TICKET')) {
             var channel = message.channel;
             
-            request('https://slack.com/api/channels.archive?token=xoxp-34476473665-34483469029-48223068260-3070583ad2&channel=' + channel, function (error, response, body) {
+            request('https://slack.com/api/channels.archive?token=' + token.WEB_HOOK + '&channel=' + channel, function (error, response, body) {
                 if (error || response.statusCode !== 200) {
                     //API Error
                 }
@@ -62,7 +62,7 @@ bot.use(function (message, cb) {
         else if (message.text.includes('MAKE URGENT')){
             var channel = message.channel;
 
-            request('https://slack.com/api/channels.info?token=xoxp-34476473665-34483469029-48223068260-3070583ad2&channel=' + channel,
+            request('https://slack.com/api/channels.info?token=' + token.WEB_HOOK + '&channel=' + channel,
                 function (error, response, body) {
                     if (error || response.statusCode !== 200) {
                         //API Error
@@ -111,6 +111,7 @@ bot.use(function (message, cb) {
                         else {
                             var channel = JSON.parse(body).channel.name;
                             sendEmail(channel, senderName, message.text);
+                            message.text = message.text.replace(BOT_HASH, "");
                             ticket.insertTicketMessage(message.text, senderName, channel);
                         }
                     });
