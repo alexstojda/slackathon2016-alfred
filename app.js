@@ -9,6 +9,7 @@ var workflow = require('./source/Workflow');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var response = require('./routes/response.js');
 
 var app = express();
 
@@ -17,7 +18,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -26,20 +27,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/users', users);
+app.use('/response', response);
 
 app.listen(3000);
 
 // Upload route.
 app.post('/', function(req, res) {
-    console.log("i got here");
     console.log(req.body);
 
     workflow.handleFormInput(req.body, function(ticketData) {
-        //TODO: Send them a thank you page or something
-        //ticketData.ticketId TICKET NUMBER
-        //ticketData.title TICKET TITLE
-        //ticketData.description TICKET description
-        res.render('ticketSent', { title: ticketData.title, ticketId: ticketData.ticketId });
+        res.render('ticketSent', { title: ticketData.title, ticketId: ticketData.ticketId, ticketDesc: ticketData.description });
     },
     function(errorMsg) {
         fs.readFile('./views/redirectErr.ejs', 'utf8', function(err, contents) {
@@ -47,6 +44,11 @@ app.post('/', function(req, res) {
         });
     });
     
+});
+
+app.post('/response', function(req, res) {
+    console.log(req.body);
+    console.log("response post");
 });
 
 // catch 404 and forward to error handler
