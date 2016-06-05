@@ -10,7 +10,7 @@ router.get('/', function(req, res, next) {
               var history = "";
               for (var i = 0; i < results.length; ++i) {
                   var result = results[i];
-                  history += "<p>" + result["msg_sender"].replace("alfred", ticketData.name) + ": " + result["msg_text"] + "</p>";
+                  history += result["msg_sender"].replace("alfred", ticketData.name) + ": " + result["msg_text"] + "*np*";
               }
               res.render('userResponse', { historyBlock: history, name: ticketData.name, title: ticketData.title });
           },
