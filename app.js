@@ -9,6 +9,7 @@ var workflow = require('./source/Workflow');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var response = require('./routes/response.js');
 
 var app = express();
 
@@ -26,12 +27,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/users', users);
+app.use('/response', response);
 
 app.listen(3000);
 
 // Upload route.
 app.post('/', function(req, res) {
-    console.log("i got here");
     console.log(req.body);
 
     workflow.handleFormInput(req.body, function(ticketData) {
