@@ -4,6 +4,7 @@
     <title>Response Form</title>
     <meta charset="UTF-8">
     <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
           integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -49,15 +50,17 @@
                 document.getElementById("tokenIdInput").value = tokenID;
             }
 
-            var historyStr = "<%= historyBlock %>";
+            var historyStr = '<%= historyBlock %>';
             if (isEmpty(historyStr)) {
                 document.getElementById("historyDiv").innerHTML = "<div class='list-group-item'>No previous history</div>";
             } else {
+                historyStr = unescape(historyStr);
                 historyStr = historyStr.replace(new RegExp("_br_", 'g'), "<br>");
+                console.log(historyStr);
                 var paras = historyStr.split("*np*");
                 for (var i = 0; i < paras.length; i++) {
-                    if (paras[i].length == 0)
-                        continue;
+                    if(paras[i].length == 0)
+                            continue;
                     document.getElementById("historyDiv").innerHTML = document.getElementById("historyDiv").innerHTML + "<div class='list-group-item'>" + paras[i] + "</div>";
                 }
             }

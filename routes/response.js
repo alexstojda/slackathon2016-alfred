@@ -27,6 +27,7 @@ router.get('/', function(req, res, next) {
                    }
 
                    history = history.replace(new RegExp("\n", 'g'), "_br_");
+                   history = escape(history);
                    res.render('userResponse', { historyBlock: history, name: ticketData.name, title: ticketData.title });
                }, function (err) {
                    res.render('error');
