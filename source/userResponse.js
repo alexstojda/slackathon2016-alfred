@@ -13,7 +13,8 @@ module.exports.sendMessageAsBot = function(message, channel, addToHistory, next,
 
     var requestData = {
         channel: channel,
-        text: message
+        text: message,
+        link_names: 1
     };
 
     if (addToHistory) {
