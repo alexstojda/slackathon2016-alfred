@@ -19,6 +19,7 @@ var setStatus = function (channelId, status) {
         if (error || response.statusCode !== 200) {
             //API Error
         }
+        
 
         var body_object = JSON.parse(body);
         if (body_object.ok) {
@@ -245,7 +246,6 @@ bot.use(function (message, cb) {
                             else {
                                 var channel = JSON.parse(body).channel.name;
                                 sendEmail(channel, senderName, message.text);
-                                message.text = message.text.replace(BOT_HASH, "");
                                 ticket.insertTicketMessage(message.text, senderName, channel);
                             }
                         });
