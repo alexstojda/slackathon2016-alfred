@@ -14,8 +14,8 @@ router.get('/', function(req, res, next) {
            res.render('failedValidation');
        } else {
            ticketDB.fetchTicketRecord(ticketId, function(ticketData) {
-               if (ticketData.statusCode == 1) {
-                   res.render('closedTicket', {ticketId: ticketId, ticketTitle: title});
+               if (ticketData.statusId == 1) {
+                   res.render('closedTicket', {ticketId: ticketId, ticketTitle: ticketData.title });
                    return;
                }
 
@@ -26,7 +26,7 @@ router.get('/', function(req, res, next) {
                        history += result["msg_sender"].replace("alfred", ticketData.name) + ": " + result["msg_text"] + "*np*";
                    }
 
-                   history = history.replace("\n", "*br*");
+                   history = history.replace(new RegExp("\n", 'g'), "_br_");
                    res.render('userResponse', { historyBlock: history, name: ticketData.name, title: ticketData.title });
                }, function (err) {
                    res.render('error');
