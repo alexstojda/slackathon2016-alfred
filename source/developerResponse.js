@@ -11,6 +11,24 @@ var transporter = nodemailer.createTransport('direct:?name=slackos.teambana.com'
 var BOT_HASH = '<@U1E5ZKB7S>';
 var bot = new slackbot(token.BOT);
 
+var setStatus = function(channelId, status) {
+
+    request('https://slack.com/api/channels.archive?token=xoxp-34476473665-34483469029-48223068260-3070583ad2&channel=' + channelId, function(error, response, body) {
+        if (error || response.statusCode !== 200) {
+            //API Error
+        }
+
+        var body_object = JSON.parse(body);
+        if (body_object.ok) {
+            var ticketId = body_object.channel.name;
+
+            ticket.setStatus(ticketId, status);
+        }
+
+    });
+
+};
+
 bot.use(function (message, cb) {
     if ((message.type == 'message') && (message.text.includes(BOT_HASH))) {
 
@@ -25,10 +43,15 @@ bot.use(function (message, cb) {
                 else {
                     //var senderName = body.user.real_name;
                     console.log(body);
+
+
+
                     if (body.ok) {
                         
                         //Set Status of ticket to 1
-                        
+
+                        setStatus(channel, 1);
+
                     }
                     
                 }
@@ -48,10 +71,9 @@ bot.use(function (message, cb) {
 
                         var body_object = JSON.parse(body);
                         var ticketTitle = 'URGENT' + body_object.channel.topic.value;
-                        
-                            request('')
-                        
+
                         if (body_object.channel.topic.value.ok) {
+
                         }
 
                     }
