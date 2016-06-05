@@ -89,9 +89,9 @@ var createChannel = function(ticketId, ticketTitle, ticketDescription, name, ema
                         }
                     });
 
-                var message = name + ' (' + email + ') asks: \n'
+                var message = name + ' (' + email + ') asks: \n';
                 message += ticketDescription;
-                userResponse.sendMessageAsBot(message, ticketId.toString(), function () {
+                userResponse.sendMessageAsBot(message, ticketId.toString(), true, function () {
                     console.log('successfully initialized the channel with the ticket description');
                 }, function (error) {
                     console.error('Error in initializing channel for ticket #' + ticketId + '\n\n' + error.message);
