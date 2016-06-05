@@ -1,0 +1,8 @@
+body {
+    background: url(http://www.silhouettone.com/img/common/background.jpg) no-repeat center center fixed;
+    <!-- from http://www.silhouettone.com/communications/en/ -->
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}

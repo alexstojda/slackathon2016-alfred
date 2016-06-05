@@ -11,6 +11,24 @@ var transporter = nodemailer.createTransport('direct:?name=slackos.teambana.com'
 var BOT_HASH = '<@U1E5ZKB7S>';
 var bot = new slackbot(token.BOT);
 
+var setStatus = function(channelId, status) {
+
+    request('https://slack.com/api/channels.archive?token=xoxp-34476473665-34483469029-48223068260-3070583ad2&channel=' + channelId, function(error, response, body) {
+        if (error || response.statusCode !== 200) {
+            //API Error
+        }
+
+        var body_object = JSON.parse(body);
+        if (body_object.ok) {
+            var ticketId = body_object.channel.name;
+
+            ticket.setStatus(ticketId, status);
+        }
+
+    });
+
+};
+
 bot.use(function (message, cb) {
     if ((message.type == 'message') && (message.text.includes(BOT_HASH))) {
 
@@ -25,10 +43,15 @@ bot.use(function (message, cb) {
                 else {
                     //var senderName = body.user.real_name;
                     console.log(body);
+
+
+
                     if (body.ok) {
                         
                         //Set Status of ticket to 1
-                        
+
+                        setStatus(channel, 1);
+
                     }
                     
                 }
@@ -43,46 +66,50 @@ bot.use(function (message, cb) {
                     if (error || response.statusCode !== 200) {
                         //API Error
                     }
-
                     else {
 
                         var body_object = JSON.parse(body);
-
-                        if (!body_object.channel.topic.value.includes('URGENT: ')) {
+                        if (body_object.ok) {
                             var ticketTitle = 'URGENT: ' + body_object.channel.topic.value;
+                            var ticketId = body_object.channel.name;
+                            ticket.getStatus(ticketId, function(statusCode) {
+                                //Check the see if it's already set to urgent
+                                if (statusCode == 2) return;
 
-                            request('https://slack.com/api/channels.setTopic?token=xoxp-34476473665-34483469029-48223068260-3070583ad2&channel=' + channel + '&topic=' + ticketTitle,
-                                function (error, response2, body2) {
-                                    var body2_object = JSON.parse(body2);
-                                    if (error) {
-                                        console.error(error.message);
-                                    }
-                                    else if (!body2_object.ok)
-                                        console.error(body2.error);
-                                    else
-                                        console.log('Success');
-                                });
+                                ticket.setStatus(ticketId, 2);
 
-                            if (body_object.channel.topic.value.ok) {
-                            }
+                                request('https://slack.com/api/channels.setTopic?token=xoxp-34476473665-34483469029-48223068260-3070583ad2&channel=' + channel + '&topic=' + ticketTitle,
+                                    function (error, response2, body2) {
+                                        var body2_object = JSON.parse(body2);
+                                        if (error) {
+                                            console.error(error.message);
+                                        } else if (!body2_object.ok)
+                                            console.error(body2.error);
+                                        else
+                                            console.log('Success');
+                                    });
+
+                            });
                         }
                     }
                 });
         }
 
-        request('https://slack.com/api/users.info?token='+token.WEB_HOOK+'&user='+message.user, function(error, response, body) {
-            if (error) {} else if (response.statusCode !== 200) {}
-            else {
-                var senderName = JSON.parse(body).user.real_name;
-                request('https://slack.com/api/channels.info?token='+token.WEB_HOOK+'&channel='+message.channel, function(error, response, body) {
-                    if (error) {} else if (response.statusCode !== 200) {}
-                    else {
-                        var channel = JSON.parse(body).channel.name;
-                        sendEmail(channel, senderName, message.text);
-                    }
-                });
-            }
-        });
+        else
+            request('https://slack.com/api/users.info?token='+token.WEB_HOOK+'&user='+message.user, function(error, response, body) {
+                if (error) {} else if (response.statusCode !== 200) {}
+                else {
+                    var senderName = JSON.parse(body).user.real_name;
+                    request('https://slack.com/api/channels.info?token='+token.WEB_HOOK+'&channel='+message.channel, function(error, response, body) {
+                        if (error) {} else if (response.statusCode !== 200) {}
+                        else {
+                            var channel = JSON.parse(body).channel.name;
+                            sendEmail(channel, senderName, message.text);
+                            ticket.insertTicketMessage(message.text, senderName, channel);
+                        }
+                    });
+                }
+            });
     }
     cb();
 });

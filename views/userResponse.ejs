@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
+    <title>Response Form</title>
     <meta charset="UTF-8">
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <!-- Latest compiled and minified CSS -->
@@ -21,23 +21,9 @@
       }
       window.onload = function()
       {
-        errNum = getQueryVariable("err");
+        ticketID = getQueryVariable("id");
         if (errNum != false) {
-          var errTxt = "Invalid Error";
-          switch(errNum) {
-            case "1":
-              errTxt = "Please provide a name!";
-              break;
-            case "2":
-              errTxt = "Please provide a title!";
-              break;
-            case "3":
-              errTxt = "Please provide a description!";
-              break;
-            case "4":
-              errTxt = "The email address you entered is invalid!";
-              break;
-          }
+          var errTxt = "No ID in URL";
           document.getElementById("errorDiv").style.display = "block";
           document.getElementById("errorText").innerHTML = errTxt;
         }
@@ -49,26 +35,14 @@
   <body>
     <div class="container">
       <div class="page-header">
-        <h1><%= title %> <small>Welcome to <%= title %></small></h1>
+        <h1>User Response <small>We are here to help</small></h1>
       </div>
 
       <div id="errorDiv" class="alert alert-danger" style="display: none">
         <strong id="errorText"></strong>
       </div>
 
-      <form action="/" enctype="application/x-www-form-urlencoded" method="post">
-        <div class="form-group">
-          <label for="exampleInputName1">Name</label>
-          <input type="text" class="form-control" id="exampleInputName1" name="name" maxlength="50">
-        </div>
-        <div class="form-group">
-          <label for="exampleInputName1">Email</label>
-          <input type="text" class="form-control" id="exampleInputName1" name="email" maxlength="50">
-        </div>
-        <div class="form-group">
-          <label for="exampleInputName1">Title</label>
-          <input type="text" class="form-control" id="exampleInputName1" name="title" maxlength="120">
-        </div>
+      <form action="/response" enctype="application/x-www-form-urlencoded" method="post">
         <div class="form-group">
           <label for="exampleInputName1">Description of problem</label>
           <textarea class="form-control" name="description" rows="10" ></textarea>
