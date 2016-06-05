@@ -38,7 +38,7 @@ app.post('/', function(req, res) {
     console.log(req.body);
 
     workflow.handleFormInput(req.body, function(ticketData) {
-        res.render('ticketSent', { title: ticketData.title, ticketId: ticketData.ticketId, ticketDesc: ticketData.description });
+        res.render('ticketSent', { title: ticketData.title, ticketId: ticketData.ticketId, ticketDesc: ticketData.description, formRedirect: formRedirect });
     },
     function(errorMsg) {
         fs.readFile('./views/redirectErr.ejs', 'utf8', function(err, contents) {
@@ -54,7 +54,7 @@ app.post('/response', function(req, res) {
     var ticketId = req.body.ticketId;
     var title = req.body.title;
     userResponse.sendMessageAsBot(message, ticketId, true, function() {
-        res.render('ticketSent', { title: title, ticketDesc: message, ticketId: ticketId });
+        res.render('ticketSent', { title: title, ticketDesc: message, ticketId: ticketId, formRedirect: formRedirect });
     }, function (err) {
         res.render('error');
     });
