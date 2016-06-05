@@ -31,7 +31,7 @@ var setStatus = function (channelId, status) {
 };
 
 bot.use(function (message, cb) {
-    if ((message.type == 'message') && (message.text.includes(BOT_HASH))) {
+    if (message != undefined && message != null && (message.type == 'message') && (message.text.includes(BOT_HASH))) {
 
         if (message.text.includes('CLOSE TICKET')) {
             var channel = message.channel;
@@ -79,16 +79,28 @@ bot.use(function (message, cb) {
                                 ticket.setStatus(ticketId, 2);
 
                                 request('https://slack.com/api/channels.setTopic?token=' + token.WEB_HOOK + '&channel=' + channel + '&topic=' + ticketTitle,
-                                    function (error, response2, body2) {
+                                    function (error2, response2, body2) {
                                         var body2_object = JSON.parse(body2);
-                                        if (error) {
-                                            console.error(error.message);
+                                        if (error2) {
+                                            console.error(error2.message);
                                         } else if (!body2_object.ok)
                                             console.error(body2.error);
                                         else{
-                                            var message = 'ticket #' + ticketId + ' has been marked as URGENT by ' + message.user;
-                                            var channel = ticketId;
-                                            userResponse.sendMessageAsBot(message,channel,false);
+
+                                            request('https://slack.com/api/users.info?token=' + token.WEB_HOOK + '&user=' + message.user, function(error3, response3, body3) {
+
+                                                var body3_object = JSON.parse(body3);
+
+                                                if (body3_object.ok) {
+                                                    var msg = 'ticket %23' + ticketId.toString() + ' has been marked as URGENT by ' +
+                                                        body3_object.user.profile.first_name + " " + body3_object.user.profile.last_name;
+                                                    var channel = ticketId;
+                                                    userResponse.sendMessageAsBot(msg, channel, false);
+
+                                                }
+
+                                            });
+
                                         }
 
                                     });
@@ -122,6 +134,73 @@ bot.use(function (message, cb) {
             ticket.deleteCustomField(fieldName);
         }
 
+        else if (message.text.includes('LIST CUSTOM FIELDS')) {
+            ticket.getCustomFields(function(fields) {
+                var annotated = "Custom Fields";
+
+                for (var i = 0; i < fields.length; ++i) {
+                    var field = fields[i];
+                    var field_name = field.input_name;
+                    var field_desc = field.input_desc;
+                    annotated += "\nFieldName: " + field_name + "    Description: " + field_desc;
+                }
+
+                request('https://slack.com/api/channels.info?token=' + token.WEB_HOOK + '&channel=' + message.channel,
+                    function (error, response, body) {
+                        if (error || response.statusCode !== 200) {
+                            //API Error
+                        }
+                        else {
+
+                            var body_obj = JSON.parse(body);
+                            if (body_obj.ok) {
+                                var ticketId = body_obj.channel.name;
+
+                                userResponse.sendMessageAsBot(annotated, ticketId, false);
+                            }
+
+                        }
+                    });
+            },
+            function(error) {
+
+            });
+        }
+        else if (message.text.includes('WHO')) {
+            request('https://slack.com/api/channels.info?token=' + token.WEB_HOOK + '&channel=' + message.channel,
+                function (error, response, body) {
+                    if (error || response.statusCode !== 200) {
+                        //API Error
+                    }
+                    else {
+
+                        var body_object = JSON.parse(body);
+                        if (body_object.ok) {
+                            var ticketTitle = 'URGENT: ' + body_object.channel.topic.value;
+                            var ticketId = body_object.channel.name;
+
+                            ticket.fetchTicketRecord(ticketId, function(ticketData) {
+
+                                var annotated = "WHO?\n\n";
+                                annotated += "Name: " + ticketData.name;
+                                annotated += "\nEmail: " + ticketData.email;
+
+                                for (var key in ticketData.customFields) {
+                                    if (ticketData.customFields.hasOwnProperty(key)) {
+                                        annotated += "\n" + key + ": " + JSON.stringify(ticketData.customFields[key]);
+                                    }
+                                }
+
+                                userResponse.sendMessageAsBot(annotated, ticketId, false);
+
+                            }, function(err) {
+                                userResponse.sendMessageAsBot(JSON.stringify(err), ticketId, false);
+                            });
+
+                        }
+                    }
+                });
+        }
         else
             request('https://slack.com/api/users.info?token=' + token.WEB_HOOK + '&user=' + message.user, function (error, response, body) {
                 if (error) {

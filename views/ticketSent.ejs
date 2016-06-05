@@ -18,6 +18,25 @@
                     console.log("urlParams: " + urlParams)
                     document.getElementById("redirectLink").href = "/response?" + urlParams;
                 }
+
+                var jsonCustomFields = '<%= CustomFieldsJson %>';
+                jsonCustomFields = jsonCustomFields.replace(new RegExp('&#34;', 'g'), '"');
+                if (jsonCustomFields != "") {
+                    var customFields = JSON.parse(jsonCustomFields);
+
+                    var html = "";
+
+                    for (var key in customFields) {
+                        if (customFields.hasOwnProperty(key)) {
+                            html += "\n<p><strong>" + key + ": </strong>" + customFields[key] + "</p>";
+                        }
+                    }
+
+                    console.log(html);
+
+                    document.getElementById("extraFields").innerHTML += html;
+                }
+
             }
         </script>
     </head>
@@ -29,7 +48,7 @@
 
             <p class="lead">We will reply to you shortly!</p>
             <div class="panel panel-default">
-                <div class="panel-body">
+                <div class="panel-body" id="extraFields">
                     <p><strong>Title: </strong><%= title %></p>
                     <p><strong>Description: </strong><%= ticketDesc %></p>
                     <p><strong>Ticket ID: </strong><%= ticketId %></p>

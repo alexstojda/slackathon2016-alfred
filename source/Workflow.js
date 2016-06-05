@@ -14,8 +14,32 @@ var checkEmailFormat = function(email) {
     return re.test(email);
 };
 
+var checkIfObjectIsEmpty = function(obj) {
+    for(var prop in obj) {
+        if(obj.hasOwnProperty(prop))
+            return false;
+    }
+
+    return true;
+};
+
+
 var checkEmpty = function(text) {
     return text == null || text.trim() == "";
+};
+
+var getCustomFields = function(formData) {
+
+    var CustomFields = {};
+    for (var key in formData) {
+        if (formData.hasOwnProperty(key) && key.length > 7 && key.substr(0, 7) == "custom_") {
+            //The key is a custom property
+            CustomFields[key.substr(7)] = formData[key];
+        }
+    }
+
+    return CustomFields;
+
 };
 
 var handleFormInput = function(formData, cbSuccess, cbError) {
@@ -26,7 +50,7 @@ var handleFormInput = function(formData, cbSuccess, cbError) {
     var name = formData.name;
     var title = formData.title;
     var description = formData.description;
-    var customFields = {};
+    var customFields = getCustomFields(formData);
 
     if (checkEmpty(name)) {
         cbError("1");
@@ -50,7 +74,7 @@ var handleFormInput = function(formData, cbSuccess, cbError) {
 
     ticketDB.insertTicketRecord(email, name, customFields, title, description, function(ticketId) {
         //Next after inserted the ticket data to the DB
-        createChannel(ticketId, title, description, name, email, cbSuccess, cbError);
+        createChannel(ticketId, title, description, name, email, customFields, cbSuccess, cbError);
 
     }, function(error) {
         //In the event of an error
@@ -59,7 +83,7 @@ var handleFormInput = function(formData, cbSuccess, cbError) {
 
 };
 
-var createChannel = function(ticketId, ticketTitle, ticketDescription, name, email, cbSuccess, cbError) {
+var createChannel = function(ticketId, ticketTitle, ticketDescription, name, email, customFields,cbSuccess, cbError) {
 
     request('https://slack.com/api/channels.create?token='+token.WEB_HOOK+'&name=' + ticketId.toString(), function (error, response, body) {
         if (error || response.statusCode !== 200) {
@@ -92,6 +116,19 @@ var createChannel = function(ticketId, ticketTitle, ticketDescription, name, ema
 
                 var message = name + ' (' + email + ') asks: \n';
                 message += ticketDescription;
+
+                if (!checkIfObjectIsEmpty(customFields)) {
+                    message += "\n\nAdditional Information:\n";
+
+                    for (var key in customFields) {
+                        if (customFields.hasOwnProperty(key)) {
+                            message += key + ": " + customFields[key] + "\n";
+                        }
+                    }
+
+                }
+
+
                 userResponse.sendMessageAsBot(message, ticketId.toString(), true, function () {
                     console.log('successfully initialized the channel with the ticket description');
                 }, function (error) {
@@ -110,7 +147,8 @@ var createChannel = function(ticketId, ticketTitle, ticketDescription, name, ema
                 cbSuccess({
                     ticketId: ticketId,
                     title: ticketTitle,
-                    description: ticketDescription
+                    description: ticketDescription,
+                    customFields: customFields
                 });
 
             } else {
