@@ -46,7 +46,7 @@
         if (isEmpty(historyStr)) {
           document.getElementById("historyDiv").innerHTML = "<p>No previous history</p>";
         } else {
-          historyStr = historyStr.replace("*br*", "<br>");
+          historyStr = historyStr.replace(new RegExp("_br_", 'g'), "<br>");
           var paras = historyStr.split("*np*");
           for (var i=0;i<paras.length;i++) {
             document.getElementById("historyDiv").innerHTML = document.getElementById("historyDiv").innerHTML + "<p>" + paras[i] + "</p>";
