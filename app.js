@@ -51,10 +51,11 @@ app.post('/response', function(req, res) {
     console.log(req.body);
     var message = req.body.description;
     var ticketId = req.body.ticketId;
+    var title = req.body.title;
     userResponse.sendMessageAsBot(message, ticketId, true, function() {
-        res.render('ticketSent');
+        res.render('ticketSent', { title: title, ticketDesc: message, ticketId: ticketId });
     }, function (err) {
-
+        res.render('error');
     });
     console.log("response post");
 });
