@@ -7,8 +7,10 @@ router.get('/', function(req, res, next) {
   var ticketId = req.param('id');
   ticketDB.fetchTicketRecord(ticketId, function(ticketData) {
 
-      if (ticketData.statusCode == 1)
-        res.render('closedTicket', { ticketId: ticketId, ticketTitle: title });
+      if (ticketData.statusCode == 1) {
+          res.render('closedTicket', {ticketId: ticketId, ticketTitle: title});
+          return;
+      }
 
       ticketDB.getTicketMessageHistory(ticketId, function(results) {
               var history = "";
@@ -16,6 +18,8 @@ router.get('/', function(req, res, next) {
                   var result = results[i];
                   history += result["msg_sender"].replace("alfred", ticketData.name) + ": " + result["msg_text"] + "*np*";
               }
+
+              history = history.replace("\n", "*br*");
               res.render('userResponse', { historyBlock: history, name: ticketData.name, title: ticketData.title });
           },
           function (err) {
