@@ -70,19 +70,28 @@ bot.use(function (message, cb) {
 
                         var body_object = JSON.parse(body);
 
-                        var ticketTitle = 'URGENT: ' + body_object.channel.topic.value;
+                        if (body_object.ok) {
+                            var ticketTitle = 'URGENT: ' + body_object.channel.topic.value;
+                            var ticketId = body_object.channel.name;
+                            ticket.getStatus(ticketId, function(statusCode) {
+                                //Check the see if it's already set to urgent
+                                if (statusCode == 2) return;
 
-                        request('https://slack.com/api/channels.setTopic?token=xoxp-34476473665-34483469029-48223068260-3070583ad2&channel=' + channel + '&topic=' + ticketTitle,
-                            function (error, response2, body2) {
-                                var body2_object = JSON.parse(body2);
-                                if (error) {
-                                    console.error(error.message);
-                                } else if (!body2_object.ok)
-                                    console.error(body2.error);
-                                else
-                                    console.log('Success');
+                                ticket.setStatus(ticketId, 2);
+
+                                request('https://slack.com/api/channels.setTopic?token=xoxp-34476473665-34483469029-48223068260-3070583ad2&channel=' + channel + '&topic=' + ticketTitle,
+                                    function (error, response2, body2) {
+                                        var body2_object = JSON.parse(body2);
+                                        if (error) {
+                                            console.error(error.message);
+                                        } else if (!body2_object.ok)
+                                            console.error(body2.error);
+                                        else
+                                            console.log('Success');
+                                    });
+
                             });
-
+                        }
                     }
                 });
         }
