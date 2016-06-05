@@ -74,6 +74,7 @@ var createChannel = function(ticketId, ticketTitle, ticketDescription, name, ema
 
                 var channelId = body_object.channel.id;
                 ticketDB.addChannelIdToTicket(ticketId, channelId);
+                ticketDB.setTicketToken(ticketId);
 
                 request('https://slack.com/api/channels.setTopic?token='+token.WEB_HOOK+'&channel=' + channelId + '&topic=' + ticketTitle,
                     function (error, response2, body2) {
