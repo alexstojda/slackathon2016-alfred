@@ -87,8 +87,8 @@ bot.use(function (message, cb) {
                                         } else if (!body2_object.ok)
                                             console.error(body2.error);
                                         else{
-                                            var message = 'ticket #' + ticketId + ' has been marked as URGENT by' + message.user;
-                                            var channel =
+                                            var message = 'ticket #' + ticketId + ' has been marked as URGENT by ' + message.user;
+                                            var channel = ticketId;
                                             userResponse.sendMessageAsBot(message,channel,false);
 
                                         }
@@ -131,7 +131,7 @@ var sendEmail = function (ticketID, respondingUserName, message) {
 
         console.log(message);
 
-        var text =  "You have recevied a new response from "+respondingUserName+'\n'+
+        var text =  "You have received a new response from "+respondingUserName+'\n'+
             '"'+message+"\"\n"+
             "To reply to your ticket, please copy and paste this link into your browser \n\n"+
             "<LINK>";//TODO: Add link to response form
