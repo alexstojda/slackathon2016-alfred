@@ -12,7 +12,7 @@
             window.onload = function() {
                 console.log("token: <%= token %>");
                 var token = "<%= token %>";
-                if (token != "null")
+                if (token != "")
                 {
                     var urlParams = "id=" + "<%= ticketId %>" +"&token=" + "<%= token %>";
                     console.log("urlParams: " + urlParams)

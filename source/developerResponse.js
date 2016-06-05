@@ -169,6 +169,8 @@ var sendEmail = function (ticketID, respondingUserName, message) {
                     html = html.replace(/{{LINK}}/g, 'http://localhost:3000/response?id='+ticketID+'&token='+token);
                     html = html.replace(/{{MESSAGE}}/g, message);
                     html = html.replace(/{{SENDING_USER}}/g, respondingUserName);
+                    html = html.replace(/{{TITLE}}/g, ticketData.title);
+
 
                     var mailOptions = {
                         from: '"Alfred@El Slackos" <alfred@elslackos.slack.com>', // sender address
