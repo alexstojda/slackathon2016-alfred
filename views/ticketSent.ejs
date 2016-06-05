@@ -10,8 +10,13 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
         <script type="text/javascript">
             window.onload = function() {
-                if (<%= formRedirect %>) {
-                    document.getElementById("redirectLink").href = "/response?id=" + <%= ticketId %>;
+                console.log("token: <%= token %>");
+                var token = "<%= token %>";
+                if (token != "null")
+                {
+                    var urlParams = "id=" + "<%= ticketId %>" +"&token=" + "<%= token %>";
+                    console.log("urlParams: " + urlParams)
+                    document.getElementById("redirectLink").href = "/response?" + urlParams;
                 }
             }
         </script>

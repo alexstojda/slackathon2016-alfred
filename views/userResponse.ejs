@@ -26,13 +26,20 @@
 
       window.onload = function()
       {
-        ticketID = getQueryVariable("id");
+        var ticketID = getQueryVariable("id");
         if (ticketID == false) {
-          var errTxt = "No ID in URL";
           document.getElementById("errorDiv").style.display = "block";
-          document.getElementById("errorText").innerHTML = errTxt;
+          document.getElementById("errorText").innerHTML = "No ID in URL";
         } else {
           document.getElementById("ticketIdInput").value = ticketID;
+        }
+
+        var tokenID = getQueryVariable("token");
+        if (tokenID == false) {
+          document.getElementById("errorDiv").style.display = "block";
+          document.getElementById("errorText").innerHTML = "No token in URL";
+        } else {
+          document.getElementById("tokenIdInput").value = tokenID;
         }
 
         var historyStr = "<%= historyBlock %>";
@@ -69,6 +76,7 @@
         </div>
         <input id="ticketIdInput" type="hidden" name="ticketId" value="0">
         <input id="titleInput" type="hidden" name="title" value="<%= title %>">
+        <input id="tokenIdInput" type="hidden" name="token" value="0">
         <button type="submit" class="btn btn-default">Submit</button>
       </form>
       <br/>
