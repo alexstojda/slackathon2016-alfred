@@ -174,7 +174,8 @@ var getTicket = function (ticketID, cbNext, cbError) {
     ticket.fetchTicketRecord(ticketID, function (thisTicket) {
         cbNext(thisTicket);
     }, function (err) {
-        cbError(err);
+        if (cbError != null)
+            cbError(err);
     });
 };
 
