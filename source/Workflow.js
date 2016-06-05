@@ -7,6 +7,7 @@ var request = require('request');
 var userResponse = require('./userResponse');
 var token = require('../token/token.js');
 var BOT_HASH = 'U1E5ZKB7S';
+var NEW_TICKET_CHANNEL = 'C1E7ETNJH';
 
 var checkEmailFormat = function(email) {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -81,8 +82,11 @@ var createChannel = function(ticketId, ticketTitle, ticketDescription, name, ema
                             console.error(error.message);
                         } else if (!body2_object.ok)
                             console.error(body2.error);
-                        else
+                        else {
                             console.log('Finished creating channel for ticket #' + ticketId + ' with topic: ' + ticketTitle);
+                            var msg = "A new Ticket has been submitted, \""+ticketTitle+"\" => #"+ticketId;
+                            request('https://slack.com/api/chat.postMessage?link_names=true&token='+token.BOT+'&channel='+NEW_TICKET_CHANNEL+"&text="+msg);
+                        }
                     });
 
                 var message = name + ' (' + email + ') asks: \n'
