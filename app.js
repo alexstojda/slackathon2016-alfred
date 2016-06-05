@@ -6,7 +6,8 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var workflow = require('./source/Workflow');
-var userResponse = requre('./source/userResponse');
+var userResponse = require('./source/userResponse');
+var developerResponse = require('./source/developerResponse');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -51,10 +52,11 @@ app.post('/response', function(req, res) {
     console.log(req.body);
     var message = req.body.description;
     var ticketId = req.body.ticketId;
+    var title = req.body.title;
     userResponse.sendMessageAsBot(message, ticketId, true, function() {
-        res.render('ticketSent');
+        res.render('ticketSent', { title: title, ticketDesc: message, ticketId: ticketId });
     }, function (err) {
-
+        res.render('error');
     });
     console.log("response post");
 });

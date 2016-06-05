@@ -8,7 +8,8 @@ router.get('/', function(req, res, next) {
   ticketDB.fetchTicketRecord(ticketId, function(ticketData) {
       ticketDB.getTicketMessageHistory(ticketId, function(results) {
               var history = "";
-              for (var result in results) {
+              for (var i = 0; i < results.length; ++i) {
+                  var result = results[i];
                   history += "<p>" + result["msg_sender"].replace("alfred", ticketData.name) + ": " + result["msg_text"] + "</p>";
               }
               res.render('userResponse', { historyBlock: history, name: ticketData.name, title: ticketData.title });
