@@ -13,7 +13,7 @@ var bot = new slackbot(token.BOT);
 var userResponse = require('./userResponse.js');
 
 var setStatus = function (channelId, status) {
-    
+
     request('https://slack.com/api/channels.archive?token=' + token.WEB_HOOK + '&channel=' + channelId, function(error, response, body) {
         if (error || response.statusCode !== 200) {
             //API Error
@@ -35,7 +35,7 @@ bot.use(function (message, cb) {
 
         if (message.text.includes('CLOSE TICKET')) {
             var channel = message.channel;
-            
+
             request('https://slack.com/api/channels.archive?token=' + token.WEB_HOOK + '&channel=' + channel, function (error, response, body) {
                 if (error || response.statusCode !== 200) {
                     //API Error
@@ -126,33 +126,31 @@ bot.use(function (message, cb) {
 bot.connect();
 
 var sendEmail = function (ticketID, respondingUserName, message) {
-    fs.readFile('../views/email.html', 'utf8', function (err, data) {
+    fs.readFile('./views/email.html', 'utf8', function (err, data) {
         if (err) {
             console.log(err);
         } else {
             var html = data;
-            getTicket(ticketID, function (ticket) {
-                ticket.setTicketToken(ticketID, function(token) {
-                    message = message.replace(BOT_HASH, ticket.name);
-
-                    //TODO: Save message in the database.
+            getTicket(ticketID, function (ticketData) {
+                ticket.getTicketToken(ticketID, function(token) {
+                    message = message.replace(BOT_HASH, ticketData.name);
 
                     console.log(message);
 
-                    var text = "You have recevied a new response from " + respondingUserName + '\n' +
+                    var text = "You have received a new response from " + respondingUserName + '\n' +
                         '"' + message + "\"\n" +
                         "To reply to your ticket, please copy and paste this link into your browser \n\n" +
                         "<LINK>";//TODO: Add link to response form
 
-                    html = html.replace(/{{NAME}}/g, ticket.name);
+                    html = html.replace(/{{NAME}}/g, ticketData.name);
                     html = html.replace(/{{LINK}}/g, 'http://localhost:3000/response?id='+ticketID+'&token='+token);
                     html = html.replace(/{{MESSAGE}}/g, message);
                     html = html.replace(/{{SENDING_USER}}/g, respondingUserName);
 
                     var mailOptions = {
                         from: '"Alfred@El Slackos" <alfred@elslackos.slack.com>', // sender address
-                        to: ticket.email, // list of receivers
-                        subject: 'New reply to your ticket: ' + ticket.title, // Subject line
+                        to: ticketData.email, // list of receivers
+                        subject: 'New reply to your ticket: ' + ticketData.title, // Subject line
                         text: text, // plaintext body
                         html: html // html body
                     };
