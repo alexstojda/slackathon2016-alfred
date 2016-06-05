@@ -10,6 +10,7 @@ var nodemailer = require('nodemailer');
 var transporter = nodemailer.createTransport('direct:?name=slackos.teambana.com');
 var BOT_HASH = '<@U1E5ZKB7S>';
 var bot = new slackbot(token.BOT);
+var userResponse = require('./userResponse.js');
 
 var setStatus = function(channelId, status) {
 
@@ -85,8 +86,13 @@ bot.use(function (message, cb) {
                                             console.error(error.message);
                                         } else if (!body2_object.ok)
                                             console.error(body2.error);
-                                        else
-                                            console.log('Success');
+                                        else{
+                                            var message = 'ticket #' + ticketId + ' has been marked as URGENT by' + message.user;
+                                            var channel =
+                                            userResponse.sendMessageAsBot(message,channel,false);
+
+                                        }
+
                                     });
 
                             });
