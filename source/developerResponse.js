@@ -99,6 +99,29 @@ bot.use(function (message, cb) {
                 });
         }
 
+        else if (message.text.includes('ADD CUSTOM FIELD')) {
+            var index = message.text.indexOf('ADD CUSTOM FIELD');
+            if (index > 0)
+                var message = message.text.substr(index);
+            message = message.replace('ADD CUSTOM FIELD', '').trim();
+            index = message.indexOf(' ');
+            var field_name = message.substr(0, index);
+            message = message.substr(index).trim();
+            var field_desc = message.trim();
+            console.log("Implements adding of field " + field_name + " DESCRIPTION: " + field_desc);
+            ticket.insertCustomField(field_name, field_desc);
+        }
+
+        else if (message.text.includes('REMOVE CUSTOM FIELD')) {
+            var index = message.text.indexOf('REMOVE CUSTOM FIELD');
+            if (index > 0)
+                var message = message.text.substr(index);
+            message = message.replace('REMOVE CUSTOM FIELD', '').trim();
+            var words = message.split(' ');
+            var fieldName = words[0];
+            ticket.deleteCustomField(fieldName);
+        }
+
         else
             request('https://slack.com/api/users.info?token=' + token.WEB_HOOK + '&user=' + message.user, function (error, response, body) {
                 if (error) {
