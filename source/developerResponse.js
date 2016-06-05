@@ -245,8 +245,7 @@ bot.use(function (message, cb) {
                             }
                             else {
                                 var channel = JSON.parse(body).channel.name;
-                                sendEmail(channel, senderName, message.text);
-                                ticket.insertTicketMessage(message.text, senderName, channel);
+                                sendEmail(channel, senderName, message.text, channel);
                             }
                         });
                     }
@@ -259,7 +258,7 @@ bot.use(function (message, cb) {
 
 bot.connect();
 
-var sendEmail = function (ticketID, respondingUserName, message) {
+var sendEmail = function (ticketID, respondingUserName, message, channel) {
     fs.readFile('./views/email.html', 'utf8', function (err, data) {
         if (err) {
             console.log(err);
@@ -268,6 +267,8 @@ var sendEmail = function (ticketID, respondingUserName, message) {
             getTicket(ticketID, function (ticketData) {
                 ticket.getTicketToken(ticketID, function(token) {
                     message = message.replace(BOT_HASH, ticketData.name);
+
+                    ticket.insertTicketMessage(message, respondingUserName, channel);
 
                     console.log(message);
 
