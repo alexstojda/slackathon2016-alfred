@@ -79,7 +79,7 @@ bot.use(function (message, cb) {
 
                                 ticket.setStatus(ticketId, 2);
 
-                                request('https://slack.com/api/channels.setTopic?token=xoxp-34476473665-34483469029-48223068260-3070583ad2&channel=' + channel + '&topic=' + ticketTitle,
+                                request('https://slack.com/api/channels.setTopic?token=' + token.WEB_HOOK + '&channel=' + channel + '&topic=' + ticketTitle,
                                     function (error, response2, body2) {
                                         var body2_object = JSON.parse(body2);
                                         if (error) {

@@ -6,6 +6,10 @@ var ticketDB = require('../source/TicketDatabase');
 router.get('/', function(req, res, next) {
   var ticketId = req.param('id');
   ticketDB.fetchTicketRecord(ticketId, function(ticketData) {
+
+      if (ticketData.statusCode == 1)
+        res.render('closedTicket', { ticketId: ticketId, ticketTitle: title });
+
       ticketDB.getTicketMessageHistory(ticketId, function(results) {
               var history = "";
               for (var i = 0; i < results.length; ++i) {
