@@ -48,9 +48,18 @@ bot.use(function (message, cb) {
 
                         var body_object = JSON.parse(body);
                         var ticketTitle = 'URGENT' + body_object.channel.topic.value;
-                        
-                            request('')
-                        
+
+                        request('https://slack.com/api/channels.setTopic?token=xoxp-34476473665-34483469029-48223068260-3070583ad2&channel=' + channel + '&topic=' + ticketTitle,
+                            function (error, response2, body2) {
+                                var body2_object = JSON.parse(body2);
+                                if (error) {
+                                    console.error(error.message);
+                                } else if (!body2_object.ok)
+                                    console.error(body2.error);
+                                else
+                                    console.log('Success');
+                            });
+
                         if (body_object.channel.topic.value.ok) {
                         }
 
