@@ -22,10 +22,12 @@
       window.onload = function()
       {
         ticketID = getQueryVariable("id");
-        if (errNum != false) {
+        if (ticketID == false) {
           var errTxt = "No ID in URL";
           document.getElementById("errorDiv").style.display = "block";
           document.getElementById("errorText").innerHTML = errTxt;
+        } else {
+          document.getElementById("ticketIdInput").value = ticketID;
         }
       }
     </script>
@@ -42,11 +44,15 @@
         <strong id="errorText"></strong>
       </div>
 
+      <p class="lead">Hi <%= name %>, we are sorry you are having a problem with "<%= title %>".</p>
+
       <form action="/response" enctype="application/x-www-form-urlencoded" method="post">
         <div class="form-group">
           <label for="exampleInputName1">Description of problem</label>
           <textarea class="form-control" name="description" rows="10" ></textarea>
         </div>
+        <input id="ticketIdInput" type="hidden" name="ticketId" value="0">
+        <input id="titleInput" type="hidden" name="title" value="<%= title %>">
         <button type="submit" class="btn btn-default">Submit</button>
       </form>
     </div>
