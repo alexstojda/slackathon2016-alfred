@@ -22,10 +22,12 @@
       window.onload = function()
       {
         ticketID = getQueryVariable("id");
-        if (errNum != false) {
+        if (ticketID == false) {
           var errTxt = "No ID in URL";
           document.getElementById("errorDiv").style.display = "block";
           document.getElementById("errorText").innerHTML = errTxt;
+        } else {
+          document.getElementById("ticketIdInput").value = ticketID;
         }
       }
     </script>
@@ -47,6 +49,7 @@
           <label for="exampleInputName1">Description of problem</label>
           <textarea class="form-control" name="description" rows="10" ></textarea>
         </div>
+        <input id="ticketIdInput" type="hidden" name="ticketId" value="Norway">
         <button type="submit" class="btn btn-default">Submit</button>
       </form>
     </div>
