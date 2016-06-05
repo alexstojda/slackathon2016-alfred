@@ -6,7 +6,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var workflow = require('./source/Workflow');
-var userResponse = requre('./source/userResponse');
+var userResponse = require('./source/userResponse');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');

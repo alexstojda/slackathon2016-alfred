@@ -5,6 +5,8 @@
 var ticketDB = require('./TicketDatabase');
 var request = require('request');
 var userResponse = require('./userResponse');
+var token = require('../token/token.js');
+var BOT_HASH = 'U1E5ZKB7S';
 
 var checkEmailFormat = function(email) {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -58,7 +60,7 @@ var handleFormInput = function(formData, cbSuccess, cbError) {
 
 var createChannel = function(ticketId, ticketTitle, ticketDescription, name, email, cbSuccess, cbError) {
 
-    request('https://slack.com/api/channels.create?token=xoxp-34476473665-34483469029-48223068260-3070583ad2&name=' + ticketId.toString(), function (error, response, body) {
+    request('https://slack.com/api/channels.create?token='+token.WEB_HOOK+'&name=' + ticketId.toString(), function (error, response, body) {
         if (error || response.statusCode !== 200) {
             //API Error
             cbError("Unable to create channel for this ticket, please try again...")
@@ -72,7 +74,7 @@ var createChannel = function(ticketId, ticketTitle, ticketDescription, name, ema
                 var channelId = body_object.channel.id;
                 ticketDB.addChannelIdToTicket(ticketId, channelId);
 
-                request('https://slack.com/api/channels.setTopic?token=xoxp-34476473665-34483469029-48223068260-3070583ad2&channel=' + channelId + '&topic=' + ticketTitle,
+                request('https://slack.com/api/channels.setTopic?token='+token.WEB_HOOK+'&channel=' + channelId + '&topic=' + ticketTitle,
                     function (error, response2, body2) {
                         var body2_object = JSON.parse(body2);
                         if (error) {
@@ -92,12 +94,19 @@ var createChannel = function(ticketId, ticketTitle, ticketDescription, name, ema
                 });
 
                 //var senderName = body.user.real_name;
+                request('https://slack.com/api/channels.invite?token='+token.WEB_HOOK+'&channel='+channelId+'&user='+BOT_HASH, function(error, response2, body2) {
+                    if(error || response2.errorCode !== 200){
+                        console.log(error);
+                    }
+                    else if(!JSON.parse(body2).ok){
+                        console.log('Bot could not be added to new channel');
+                    }
+                });
                 cbSuccess({
                     ticketId: ticketId,
                     title: ticketTitle,
                     description: ticketDescription
                 });
-                //Go back the the original callback with ticketId as a parameter
 
             } else {
                 cbError("Unable to create channel for this ticket, please try again...")
