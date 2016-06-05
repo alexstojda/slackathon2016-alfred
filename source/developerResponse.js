@@ -66,15 +66,22 @@ bot.use(function (message, cb) {
                     if (error || response.statusCode !== 200) {
                         //API Error
                     }
-
                     else {
 
                         var body_object = JSON.parse(body);
-                        var ticketTitle = 'URGENT' + body_object.channel.topic.value;
 
-                        if (body_object.channel.topic.value.ok) {
+                        var ticketTitle = 'URGENT: ' + body_object.channel.topic.value;
 
-                        }
+                        request('https://slack.com/api/channels.setTopic?token=xoxp-34476473665-34483469029-48223068260-3070583ad2&channel=' + channel + '&topic=' + ticketTitle,
+                            function (error, response2, body2) {
+                                var body2_object = JSON.parse(body2);
+                                if (error) {
+                                    console.error(error.message);
+                                } else if (!body2_object.ok)
+                                    console.error(body2.error);
+                                else
+                                    console.log('Success');
+                            });
 
                     }
                 });
