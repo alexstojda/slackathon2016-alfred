@@ -46,6 +46,11 @@ app.post('/', function(req, res) {
     
 });
 
+app.post('/response', function(req, res) {
+    console.log(req.body);
+    console.log("response post");
+});
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
