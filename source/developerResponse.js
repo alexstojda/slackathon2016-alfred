@@ -11,6 +11,7 @@ var transporter = nodemailer.createTransport('direct:?name=slackos.teambana.com'
 var BOT_HASH = '<@U1E5ZKB7S>';
 var bot = new slackbot(token.BOT);
 var userResponse = require('./userResponse.js');
+var URGENT_CHANNEL = 'C1E74EV6G';
 
 var setStatus = function (channelId, status) {
 
