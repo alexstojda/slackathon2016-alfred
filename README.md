@@ -23,6 +23,6 @@ Whats next? Well, the possibilities are honestly endless. Slack offers so many f
 
 Setup your tokens accordingly in token/token.js then Run app.js!
 
-As see on http://devpost.com/software/alfred-customer-support-with-a-little-more-slack
+As seen on http://devpost.com/software/alfred-customer-support-with-a-little-more-slack
 
 
